@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargador Universal</title>
+    <title>Descargador Multiplataforma</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,123 +24,97 @@
             max-width: 450px;
             width: 100%;
         }
-        h1 { margin-bottom: 10px; color: #4a148c; }
+        h1 { margin-bottom: 10px; color: #11998e; }
         p { color: #666; font-size: 14px; margin-bottom: 25px; }
         input {
             padding: 12px; width: 100%; border: 2px solid #ddd;
-            border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px;
+            border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; font-size: 16px;
         }
         button {
-            background-color: #764ba2; color: white; padding: 12px; border: none;
+            background-color: #11998e; color: white; padding: 12px; border: none;
             border-radius: 8px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold;
+            transition: background 0.3s;
         }
-        button:hover { background-color: #5c3782; }
-        .mensaje { margin-top: 15px; font-size: 14px; font-weight: bold; color: #4a148c; word-break: break-all; }
+        button:hover { background-color: #0b7970; }
+        .resultado-box {
+            margin-top: 25px; padding: 15px; background: #f9f9f9; 
+            border-radius: 10px; border: 1px dashed #11998e; display: none;
+        }
+        .btn-download {
+            display: block; background-color: #28a745; color: white; padding: 10px;
+            text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 10px;
+        }
+        .btn-download:hover { background-color: #218838; }
+        .mensaje { margin-top: 15px; font-size: 14px; font-weight: bold; color: #0b7970; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Descargador de Video y Audio</h1>
-        <p>Pega tu enlace de YouTube aquí mismo</p>
+        <h1>Descargador Todo-en-Uno</h1>
+        <p>YouTube, TikTok, Instagram, Twitter y más</p>
         
-        <input type="text" id="urlInput" placeholder="Pega el enlace completo o ID aquí...">
+        <input type="text" id="urlInput" placeholder="Pega el enlace completo aquí...">
+        <button onclick="procesarEnlace()">Analizar Enlace</button>
         
-        <div style="margin-bottom: 15px;">
-            <label style="margin-right: 10px;"><input type="radio" name="format" value="merged" checked> Video (MP4)</label>
-            <label><input type="radio" name="format" value="audio"> Audio (MP3)</label>
+        <div id="resultado" class="resultado-box">
+            <span id="videoTitulo" style="font-weight: bold; font-size: 15px;">Elemento encontrado</span>
+            <a id="btnDescarga" class="btn-download" target="_blank" rel="noopener noreferrer">Descargar Archivo</a>
         </div>
-
-        <button onclick="procesarEnlace()">Descargar Ahora</button>
         
         <div id="mensaje" class="mensaje"></div>
     </div>
 
     <script>
-        function extraerID(url) {
-            url = url.trim();
-            if (url.length === 11) return url;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match.length === 11) ? match : url.substring(url.length - 11);
-        }
-
         async function procesarEnlace() {
-            const entrada = document.getElementById('urlInput').value;
+            const urlInput = document.getElementById('urlInput').value.trim();
             const mensaje = document.getElementById('mensaje');
-            const tipo = document.querySelector('input[name="format"]:checked').value;
+            const resultadoBox = document.getElementById('resultado');
+            const btnDescarga = document.getElementById('btnDescarga');
+            const videoTitulo = document.getElementById('videoTitulo');
             
-            const videoId = extraerID(entrada);
-            
-            if (!videoId) {
-                mensaje.innerText = "❌ Por favor, ingresa un enlace o ID.";
+            if (!urlInput) {
+                mensaje.innerText = "❌ Por favor, pega un enlace válido.";
                 return;
             }
 
-            mensaje.innerText = "⏳ Enviando petición estructurada al servidor externo...";
+            mensaje.innerText = "⏳ El servidor externo está buscando el video... Espera un momento.";
+            resultadoBox.style.display = "none";
 
-            const url = 'https://rapidapi.com';
+            // Usamos tu misma clave de RapidAPI pero conectando a la nueva API directa
+            const apiTarget = `https://rapidapi.com{encodeURIComponent(urlInput)}`;
+            
             const options = {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'x-rapidapi-key': '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b',
-                    'x-rapidapi-host': 'youtube-mp4-mp3-downloader.p.rapidapi.com',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: videoId,
-                    type: tipo,
-                    quality: '720'
-                })
+                    'x-rapidapi-host': 'social-media-video-downloader.p.rapidapi.com'
+                }
             };
 
             try {
-                // Paso 1: Pedir procesamiento del archivo
-                const response = await fetch(url, options);
-                
-                if (!response.ok) {
-                    mensaje.innerText = "❌ El servidor de RapidAPI está saturado. Intenta de nuevo.";
-                    return;
-                }
-                
+                const response = await fetch(apiTarget, options);
                 const data = await response.json();
 
-                if (data && data.uid) {
-                    mensaje.innerText = "⚙️ Servidor procesando el archivo en la nube... Espera un momento.";
+                // Si la API encuentra los datos exitosamente
+                if (data && data.success && data.links && data.links.length > 0) {
+                    mensaje.innerText = "✅ ¡Enlace obtenido con éxito!";
                     
-                    // Esperamos 6 segundos para darle tiempo extra al servidor de procesar
-                    setTimeout(async () => {
-                        try {
-                            // Paso 2: Consultar enlace de descarga definitivo
-                            const statusResponse = await fetch(`https://rapidapi.com/status?uid=${data.uid}`, {
-                                method: 'GET',
-                                headers: {
-                                    'x-rapidapi-key': '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b',
-                                    'x-rapidapi-host': 'youtube-mp4-mp3-downloader.p.rapidapi.com',
-                                    'Content-Type': 'application/json'
-                                }
-                            });
-                            
-                            const statusData = await statusResponse.json();
-                            const enlaceFinal = statusData.url || statusData.downloadUrl;
-
-                            if (enlaceFinal) {
-                                mensaje.innerText = "✅ ¡Listo! Tu descarga comenzará ahora.";
-                                window.open(enlaceFinal, '_blank');
-                            } else {
-                                mensaje.innerText = "⚠️ El servidor sigue convirtiendo el archivo. Presiona 'Descargar Ahora' una vez más.";
-                            }
-                        } catch (err) {
-                            mensaje.innerText = "❌ No se pudo recuperar el archivo convertido. Reintenta la descarga.";
-                        }
-                    }, 6000);
-
+                    // Buscamos el primer enlace de descarga que nos provea la API
+                    const linkDirecto = data.links[0].link;
+                    const calidad = data.links[0].quality || "Normal";
+                    
+                    videoTitulo.innerText = `Calidad encontrada: ${calidad}`;
+                    btnDescarga.href = linkDirecto;
+                    
+                    // Mostramos la caja con el botón verde de descarga
+                    resultadoBox.style.display = "block";
                 } else {
-                    mensaje.innerText = "❌ Video no encontrado en el servidor. Verifica el link de YouTube.";
+                    mensaje.innerText = "❌ No se encontraron archivos descargables para este enlace. Revisa la URL.";
                 }
             } catch (error) {
                 console.error(error);
-                mensaje.innerText = "❌ Error en el proceso. Comprueba tu conexión a internet o intenta con otro video.";
+                mensaje.innerText = "❌ Hubo un error de comunicación con el servidor. Intenta de nuevo.";
             }
         }
     </script>

@@ -84,7 +84,7 @@
                 method: 'POST',
                 headers: {
                     'x-rapidapi-key': '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b',
-                    'x-rapidapi-host': '://rapidapi.com',
+                    'x-rapidapi-host': 'youtube-mp4-mp3-downloader.p.rapidapi.com',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -95,50 +95,52 @@
             };
 
             try {
-                // Paso 1: Pedir procesamiento del video
+                // Paso 1: Pedir procesamiento del archivo
                 const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    mensaje.innerText = "❌ El servidor de RapidAPI está saturado. Intenta de nuevo.";
+                    return;
+                }
+                
                 const data = await response.json();
 
                 if (data && data.uid) {
-                    mensaje.innerText = "⚙️ Servidor procesando el archivo... Buscando tu enlace de descarga.";
+                    mensaje.innerText = "⚙️ Servidor procesando el archivo en la nube... Espera un momento.";
                     
-                    // Esperamos 5 segundos a que la API convierta el video en la nube
+                    // Esperamos 6 segundos para darle tiempo extra al servidor de procesar
                     setTimeout(async () => {
                         try {
-                            // Paso 2: Traer enlace definitivo especificando los Headers obligatorios de RapidAPI
+                            // Paso 2: Consultar enlace de descarga definitivo
                             const statusResponse = await fetch(`https://rapidapi.com/status?uid=${data.uid}`, {
                                 method: 'GET',
                                 headers: {
                                     'x-rapidapi-key': '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b',
-                                    'x-rapidapi-host': '://rapidapi.com',
-                                    'Content-Type': 'application/json' // Agregado para que no falle la lectura del estado
+                                    'x-rapidapi-host': 'youtube-mp4-mp3-downloader.p.rapidapi.com',
+                                    'Content-Type': 'application/json'
                                 }
                             });
                             
                             const statusData = await statusResponse.json();
-
-                            // La API a veces devuelve la URL dentro de "url" o dentro de "downloadUrl" según el video
                             const enlaceFinal = statusData.url || statusData.downloadUrl;
 
                             if (enlaceFinal) {
                                 mensaje.innerText = "✅ ¡Listo! Tu descarga comenzará ahora.";
                                 window.open(enlaceFinal, '_blank');
                             } else {
-                                // Si aún se está convirtiendo, le avisamos al usuario
-                                mensaje.innerText = "⚠️ El servidor externo sigue procesando. Presiona el botón de nuevo para reintentar.";
+                                mensaje.innerText = "⚠️ El servidor sigue convirtiendo el archivo. Presiona 'Descargar Ahora' una vez más.";
                             }
                         } catch (err) {
-                            console.error(err);
-                            mensaje.innerText = "❌ Error al obtener el enlace definitivo de descarga.";
+                            mensaje.innerText = "❌ No se pudo recuperar el archivo convertido. Reintenta la descarga.";
                         }
-                    }, 5000);
+                    }, 6000);
 
                 } else {
-                    mensaje.innerText = "❌ El servidor rechazó la solicitud. Verifica el ID del video.";
+                    mensaje.innerText = "❌ Video no encontrado en el servidor. Verifica el link de YouTube.";
                 }
             } catch (error) {
                 console.error(error);
-                mensaje.innerText = "❌ Error de conexión. Recuerda tener encendida tu extensión CORS.";
+                mensaje.innerText = "❌ Error en el proceso. Comprueba tu conexión a internet o intenta con otro video.";
             }
         }
     </script>

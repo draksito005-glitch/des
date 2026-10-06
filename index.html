@@ -3,236 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapLoad - Descargador de Videos Todo en Uno</title>
+    <title>Descargador Universal</title>
     <style>
-        /* Estilos generales y tipografía moderna */
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #0f172a; /* Fondo oscuro moderno */
-            color: #f8fafc;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Barra de navegación superior */
-        header {
-            background-color: #1e293b;
-            padding: 15px 20px;
-            text-align: center;
-            border-bottom: 1px solid #334155;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #38bdf8; /* Azul brillante */
-        }
-
-        /* Contenedor principal de la web */
-        .main-wrapper {
-            display: flex;
-            flex: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            gap: 20px;
-        }
-
-        /* Columna central de la herramienta */
-        .content-area {
-            flex: 1;
-            background-color: #1e293b;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .content-area h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .content-area p {
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-
-        /* Caja de descarga (Barra + Botón) */
-        .download-box {
-            display: flex;
-            background-color: #0f172a;
-            border: 2px solid #334155;
-            border-radius: 50px;
-            padding: 6px;
-            margin-bottom: 30px;
-            transition: border-color 0.3s;
-        }
-        .download-box:focus-within {
-            border-color: #38bdf8;
-        }
-        .download-box input {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 12px 20px;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-        .download-box input::placeholder {
-            color: #64748b;
-        }
-        .download-box button {
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 0 30px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .download-box button:hover {
-            background-color: #0ea5e9;
-        }
-
-        /* Indicador de plataformas compatibles */
-        .supported-apps {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        .app-badge {
-            background-color: #334155;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #cbd5e1;
-        }
-
-        /* Columnas de Publicidad Lateral Limpia */
-        .ads-sidebar {
-            width: 160px;
-            background-color: #1e293b;
-            border: 1px dashed #475569;
-            border-radius: 12px;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            color: #64748b;
-            font-size: 12px;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             text-align: center;
-            padding: 10px;
-            box-sizing: border-box;
+            max-width: 450px;
+            width: 100%;
         }
-
-        /* Ocultar anuncios en pantallas muy chicas (Celulares) */
-        @media (max-width: 768px) {
-            .main-wrapper { flex-direction: column; }
-            .ads-sidebar { width: 100%; height: 90px; }
+        h1 { margin-bottom: 10px; color: #4a148c; }
+        p { color: #666; font-size: 14px; margin-bottom: 25px; }
+        input {
+            padding: 12px; width: 100%; border: 2px solid #ddd;
+            border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px;
         }
+        button {
+            background-color: #764ba2; color: white; padding: 12px; border: none;
+            border-radius: 8px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold;
+        }
+        button:hover { background-color: #5c3782; }
+        .mensaje { margin-top: 15px; font-size: 14px; font-weight: bold; color: #4a148c; word-break: break-all; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>SnapLoad Pro</h1>
-    </header>
-
-    <div class="main-wrapper">
-        <!-- Bloque publicitario izquierdo -->
-        <div class="ads-sidebar">
-            Espacio Publicitario Lateral (Ej. AdSense 160x600)
+    <div class="container">
+        <h1>Descargador de Video y Audio</h1>
+        <p>Pega tu enlace de YouTube aquí mismo</p>
+        
+        <input type="text" id="urlInput" placeholder="Pega el enlace completo o ID aquí...">
+        
+        <div style="margin-bottom: 15px;">
+            <label style="margin-right: 10px;"><input type="radio" name="format" value="merged" checked> Video (MP4)</label>
+            <label><input type="radio" name="format" value="audio"> Audio (MP3)</label>
         </div>
 
-        <!-- Área de la herramienta -->
-        <main class="content-area">
-            <h2>Descargador de Videos Online</h2>
-            <p>Pega el enlace de cualquier red social para descargar tu video en Alta Definición.</p>
-
-            <div class="download-box">
-                <input type="text" placeholder="Inserta el link de TikTok, Instagram, YouTube, Facebook..." id="videoUrl">
-                <button type="button" onclick="simularDescarga()">Descargar</button>
-            </div>
-
-            <p style="font-size: 14px; margin-bottom: 10px; color: #64748b;">Compatible con:</p>
-            <div class="supported-apps">
-                <span class="app-badge" style="border-left: 3px solid #ff0050;">TikTok</span>
-                <span class="app-badge" style="border-left: 3px solid #e1306c;">Instagram</span>
-                <span class="app-badge" style="border-left: 3px solid #ff0000;">YouTube</span>
-                <span class="app-badge" style="border-left: 3px solid #1877f2;">Facebook</span>
-                <span class="app-badge" style="border-left: 3px solid #1da1f2;">Twitter / X</span>
-            </div>
-        </main>
-
-        <!-- Bloque publicitario derecho -->
-        <div class="ads-sidebar">
-            Espacio Publicitario Lateral (Ej. AdSense 160x600)
-        </div>
+        <button onclick="procesarEnlace()">Descargar Ahora</button>
+        
+        <div id="mensaje" class="mensaje"></div>
     </div>
 
-<script>
-    async function simularDescarga() {
-        const urlInput = document.getElementById('videoUrl').value;
-        
-        if (urlInput.trim() === "") {
-            alert("Por favor, pega un enlace de Instagram primero.");
-            return;
+    <script>
+        function extraerID(url) {
+            url = url.trim();
+            if (url.length === 11) return url;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match.length === 11) ? match : url.substring(url.length - 11);
         }
 
-        // Cambiamos el texto del botón para avisar al usuario
-        const boton = document.querySelector('.download-box button');
-        boton.innerText = "Procesando...";
-        boton.disabled = true;
-
-        // CONFIGURACIÓN REAL CON TUS CREDENCIALES
-        const urlApi = 'https://rapidapi.com'; 
-        const apiKey = '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b';
-        const apiHost = '://rapidapi.com';
-
-        try {
-            // Hacemos la consulta al servidor de la API pasando la URL de Instagram
-            const response = await fetch(`${urlApi}?url=${encodeURIComponent(urlInput)}`, {
-                method: 'GET',
-                headers: {
-                    'x-rapidapi-key': apiKey,
-                    'x-rapidapi-host': apiHost
-                }
-            });
-
-            const data = await response.json();
-            console.log("Respuesta de la API:", data);
+        async function procesarEnlace() {
+            const entrada = document.getElementById('urlInput').value;
+            const mensaje = document.getElementById('mensaje');
+            const tipo = document.querySelector('input[name="format"]:checked').value;
             
-            // Evaluamos las respuestas comunes de esta API para abrir el video directo
-            if (data && (data.media || data.downloadUrl || data.url)) {
-                const videoLink = data.media || data.downloadUrl || data.url;
-                
-                alert("¡Video encontrado con éxito! Se abrirá en una nueva pestaña para que lo guardes.");
-                window.open(videoLink, '_blank'); 
-            } else {
-                alert("No se pudo extraer el video. Asegúrate de que la cuenta de Instagram sea pública y el enlace sea correcto.");
+            const videoId = extraerID(entrada);
+            
+            if (!videoId) {
+                mensaje.innerText = "❌ Por favor, ingresa un enlace o ID.";
+                return;
             }
 
-        } catch (error) {
-            console.error("Error al conectar con el motor:", error);
-            alert("Hubo un problema al conectar con el servidor de descargas.");
-        } finally {
-            // Restauramos el botón original
-            boton.innerText = "Descargar";
-            boton.disabled = false;
-        }
-    }
-</script>
- 
+            mensaje.innerText = "⏳ Enviando petición estructurada al servidor externo...";
 
+            const url = 'https://rapidapi.com';
+            const options = {
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b',
+                    'x-rapidapi-host': '://rapidapi.com',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: videoId,
+                    type: tipo,
+                    quality: '720'
+                })
+            };
+
+            try {
+                // Paso 1: Pedir procesamiento del video
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                if (data && data.uid) {
+                    mensaje.innerText = "⚙️ Servidor procesando el archivo... Buscando tu enlace de descarga.";
+                    
+                    // Esperamos 5 segundos a que la API convierta el video en la nube
+                    setTimeout(async () => {
+                        try {
+                            // Paso 2: Traer enlace definitivo especificando los Headers obligatorios de RapidAPI
+                            const statusResponse = await fetch(`https://rapidapi.com/status?uid=${data.uid}`, {
+                                method: 'GET',
+                                headers: {
+                                    'x-rapidapi-key': '30e40aa3c1mshc15c52b017ed439p1e1ad0jsnb3b33a59bf1b',
+                                    'x-rapidapi-host': '://rapidapi.com',
+                                    'Content-Type': 'application/json' // Agregado para que no falle la lectura del estado
+                                }
+                            });
+                            
+                            const statusData = await statusResponse.json();
+
+                            // La API a veces devuelve la URL dentro de "url" o dentro de "downloadUrl" según el video
+                            const enlaceFinal = statusData.url || statusData.downloadUrl;
+
+                            if (enlaceFinal) {
+                                mensaje.innerText = "✅ ¡Listo! Tu descarga comenzará ahora.";
+                                window.open(enlaceFinal, '_blank');
+                            } else {
+                                // Si aún se está convirtiendo, le avisamos al usuario
+                                mensaje.innerText = "⚠️ El servidor externo sigue procesando. Presiona el botón de nuevo para reintentar.";
+                            }
+                        } catch (err) {
+                            console.error(err);
+                            mensaje.innerText = "❌ Error al obtener el enlace definitivo de descarga.";
+                        }
+                    }, 5000);
+
+                } else {
+                    mensaje.innerText = "❌ El servidor rechazó la solicitud. Verifica el ID del video.";
+                }
+            } catch (error) {
+                console.error(error);
+                mensaje.innerText = "❌ Error de conexión. Recuerda tener encendida tu extensión CORS.";
+            }
+        }
+    </script>
 </body>
 </html>
